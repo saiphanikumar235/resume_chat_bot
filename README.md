@@ -1,2 +1,1 @@
-# RapidRecruitX
-Resume Parser 
+# resume-jd-comparison-NLP
