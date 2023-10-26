@@ -270,7 +270,7 @@ def read_docx(file):
     return my_text
 
 
-st.title("Resume and JD comparison")
+st.title("Rapid-Recruit-X")
 # jd = st.text_input('please enter the job description below:')
 uploaded_resumes = st.file_uploader(
     "Upload a resume (PDF or Docx)",
