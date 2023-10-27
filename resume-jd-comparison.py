@@ -238,7 +238,7 @@ def get_exp(resume_text, llm):
     st.write(exp)
     if exp.startswith("{"):
         r = json.loads(exp)
-        return ','.join(r['exp'])
+        return r['exp']
     return ','.join(exp) if len(exp) != 0 else None
 
 
