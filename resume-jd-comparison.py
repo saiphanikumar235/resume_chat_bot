@@ -128,7 +128,7 @@ def get_education(path, resume_text, llm):
                                       llm)
         if res.startswith('{'):
             res = json.loads(res)
-            time.sleep(60)
+            # time.sleep(60)
             return res['degree']
         return None
     else:
@@ -142,7 +142,7 @@ def get_current_location(resume_text, llm):
     if res.startswith('{'):
         res = json.loads(res)
         # st.write(res)
-        time.sleep(60)
+        # time.sleep(60)
         return res['location']
     return None
 
@@ -230,7 +230,7 @@ def get_exp(resume_text, llm):
                                   'what is number years of experience just give me number only in json format where key is exp',
                                   llm)
     exp = [c for c in exp.split() if c.isdigit()]
-    time.sleep(60)
+    # time.sleep(60)
     return ','.join(exp) if len(exp) != 0 else None
 
 
@@ -301,7 +301,7 @@ for index, uploaded_resume in enumerate(uploaded_resumes):
     total_files.append(
         resume_details
     )
-    time.sleep(60)
+    time.sleep(10)
 if len(total_files) != 0:
     df = pd.DataFrame(total_files)
     df.index = np.arange(1, len(df) + 1)
