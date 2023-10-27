@@ -230,7 +230,7 @@ def get_exp(resume_text, llm):
     #                 years = f'{y}+'
     #                 return re.sub(pattern, lambda x: words_to_numbers[x.group()], years)
     exp = get_details_from_openai(resume_text,
-                                  'Find the number of years of experience and give me output in json format where key is exp',
+                                  'Find the number of years of experience and give me output in json format where key is exp witout any prefix',
                                   llm)
     st.write(exp)
     if exp.startswith("{"):
