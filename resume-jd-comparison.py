@@ -236,6 +236,18 @@ def get_exp(resume_text, llm):
     if exp.startswith("{"):
         r = json.loads(exp)
         return ','.join(r['exp'])
+    else:
+        nlp = spacy.load('en_core_web_sm')
+        doc = nlp(exp)
+        for ent in doc.ents:
+            if ent.label_ == "DATE" and ent.text.lower() in ["year", 'yrs', 'years']:
+                years_of_experience = ent.text
+                for y in years_of_experience.split():
+                    if '.' in y:
+                        return y
+                    if y.lower() in words_to_numbers.keys() or y.replace('+', '').isnumeric():
+                        years = f"{y.replace('+', '')}+"
+                        return re.sub(pattern, lambda x: words_to_numbers[x.group()], years)
     return ','.join(exp) if len(exp) != 0 else None
 
 
