@@ -26,6 +26,9 @@ from langchain import FAISS
 from langchain.chains.question_answering import load_qa_chain
 from langchain.llms import OpenAI
 from langchain.callbacks import get_openai_callback
+from langchain.output_parsers import StructuredOutputParser, ResponseSchema
+from langchain.prompts import PromptTemplate, ChatPromptTemplate, HumanMessagePromptTemplate
+from langchain.chat_models import ChatOpenAI
 import time
 
 # os.system("python -m spacy download en_core_web_sm")
@@ -230,7 +233,7 @@ def get_exp(resume_text, llm):
     #                 years = f'{y}+'
     #                 return re.sub(pattern, lambda x: words_to_numbers[x.group()], years)
     exp = get_details_from_openai(resume_text,
-                                  'Find the number of years of experience and give me output in json format where key is exp witout any prefix',
+                                  'Find the number of years of experience and give me output in json format where key is exp',
                                   llm)
     st.write(exp)
     if exp.startswith("{"):
