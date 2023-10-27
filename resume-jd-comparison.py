@@ -250,7 +250,9 @@ def get_exp(resume_text, llm):
         pattern = r'(\d+(?:\.\d+)?)'
         exp = exp.replace("{", "").replace("}", "").replace('"', '')
         result1 = re.search(pattern, exp)
-        exp = result1.group(1)
+        exp = None
+        if result1:
+            exp = result1.group(1)
     return exp if len(exp) != 0 else None
 
 
