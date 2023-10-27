@@ -151,7 +151,7 @@ def get_current_location(resume_text, llm):
         return res['location']
     else:
         data = ','.join(open("./cities.txt", 'r').readlines())
-        res = re.sub(r"[^a-zA-Z\s]", res, '').split()
+        res = res.replace('"', '').split(" ")
         st.write(res)
         for w in res:
             if f',{w}'.lower() in data.lower():
