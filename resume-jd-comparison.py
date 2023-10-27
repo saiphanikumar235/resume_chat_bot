@@ -149,6 +149,12 @@ def get_current_location(resume_text, llm):
         # st.write(res)
         # time.sleep(60)
         return res['location']
+    else:
+        data = ','.join(open("./cities.txt", 'r').readlines())
+        res = re.sub(r"[^a-zA-Z\s]", res, '').split()
+        for w in res:
+            if f',{w}'.lower() in data.lower():
+                return w
     return None
 
 
@@ -239,7 +245,12 @@ def get_exp(resume_text, llm):
     if exp.startswith("{"):
         r = json.loads(exp)
         return r['exp']
-    return ','.join(exp) if len(exp) != 0 else None
+    else:
+        pattern = r'(\d+(?:\.\d+)?)'
+        exp = exp.replace("{", "").replace("}", "").replace('"', '')
+        result1 = re.search(pattern, exp)
+        exp = result1.group(1)
+    return exp if len(exp) != 0 else None
 
 
 def get_details(resume_text, path, llm):
