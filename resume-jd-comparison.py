@@ -141,7 +141,7 @@ def get_education(path, resume_text, llm):
 
 def get_current_location(resume_text, llm):
     res = get_details_from_openai(resume_text,
-                                  'what is the location of candiate give me in json format where key is location',
+                                  'what is the location give me in json format where key is location',
                                   llm)
     st.write(res)
     if res.startswith('{'):
@@ -233,7 +233,7 @@ def get_exp(resume_text, llm):
     #                 years = f'{y}+'
     #                 return re.sub(pattern, lambda x: words_to_numbers[x.group()], years)
     exp = get_details_from_openai(resume_text,
-                                  'Extract the number of years of experience in json format where key is exp from the resume ',
+                                  'what is the number of years of experience give me in json format where key is exp',
                                   llm)
     st.write(exp)
     if exp.startswith("{"):
