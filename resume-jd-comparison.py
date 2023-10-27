@@ -230,11 +230,12 @@ def get_exp(resume_text, llm):
     #                 years = f'{y}+'
     #                 return re.sub(pattern, lambda x: words_to_numbers[x.group()], years)
     exp = get_details_from_openai(resume_text,
-                                  'what is number years of experience just give me number only in json format where key is exp',
+                                  'Find the number of years of experience and give me output in json format where key is exp',
                                   llm)
     st.write(exp)
-    exp = [c for c in exp.split() if c.isdigit()]
-    # time.sleep(60)
+    if exp.startswith("{"):
+        r = json.loads(exp)
+        return ','.join(r['exp'])
     return ','.join(exp) if len(exp) != 0 else None
 
 
