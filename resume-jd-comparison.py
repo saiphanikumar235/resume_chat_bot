@@ -126,6 +126,7 @@ def get_education(path, resume_text, llm):
         res = get_details_from_openai(resume_text,
                                       'what is the highest education degree give me in json format where key is degree',
                                       llm)
+        st.write(res)
         if res.startswith('{'):
             res = json.loads(res)
             # time.sleep(60)
@@ -139,6 +140,7 @@ def get_current_location(resume_text, llm):
     res = get_details_from_openai(resume_text,
                                   'what is the location of candiate give me in json format where key is location',
                                   llm)
+    st.write(res)
     if res.startswith('{'):
         res = json.loads(res)
         # st.write(res)
@@ -185,6 +187,7 @@ def extract_certifications(resume_text, llm):
     r = get_details_from_openai(resume_text,
                                 'what are the only certifications give me in json format where key is certifications',
                                 llm)
+    st.write(r)
     if r.startswith("{"):
         r = json.loads(r)
         return ','.join(r['certifications'])
@@ -229,6 +232,7 @@ def get_exp(resume_text, llm):
     exp = get_details_from_openai(resume_text,
                                   'what is number years of experience just give me number only in json format where key is exp',
                                   llm)
+    st.write(exp)
     exp = [c for c in exp.split() if c.isdigit()]
     # time.sleep(60)
     return ','.join(exp) if len(exp) != 0 else None
