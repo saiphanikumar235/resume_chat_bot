@@ -242,7 +242,7 @@ def get_exp(resume_text, llm):
     exp = get_details_from_openai(resume_text,
                                   'what is the number of years of experience give me in json format where key is exp',
                                   llm)
-    # st.write(exp)
+    st.write(exp)
     if exp.startswith("{"):
         r = json.loads(exp)
         return r['exp']
