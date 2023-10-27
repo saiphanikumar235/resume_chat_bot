@@ -150,11 +150,11 @@ def get_current_location(resume_text, llm):
         # time.sleep(60)
         return res['location']
     else:
-        data = ','.join(open("./cities.txt", 'r').readlines())
+        data = ',' + ','.join(open("./cities.txt", 'r').readlines()).replace('\n', '') + ','
         res = res.replace('"', '').split(" ")
         st.write(res)
         for w in res:
-            if f',{w}'.lower() in data.lower():
+            if f',{w},'.lower() in data.lower():
                 return w
     return None
 
