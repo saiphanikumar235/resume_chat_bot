@@ -214,7 +214,7 @@ def get_exp(resume_text, llm):
     nlp = spacy.load('en_core_web_sm')
     doc = nlp(resume_text)
     for ent in doc.ents:
-        if ent.label_ == "DATE" and ent.text.lower() in ["year", 'yrs', 'years']:
+        if ent.label_ == "DATE" and ent.text.lower() in ["year"]:
             years_of_experience = ent.text
             for y in years_of_experience.split():
                 if '.' in y:
@@ -233,24 +233,12 @@ def get_exp(resume_text, llm):
     #                 years = f'{y}+'
     #                 return re.sub(pattern, lambda x: words_to_numbers[x.group()], years)
     exp = get_details_from_openai(resume_text,
-                                  'Find the number of years of experience and give me output in json format where key is exp',
+                                  'Extract the number of years of experience from the resume and provide the result in JSON format where key is exp',
                                   llm)
     st.write(exp)
     if exp.startswith("{"):
         r = json.loads(exp)
         return ','.join(r['exp'])
-    else:
-        nlp = spacy.load('en_core_web_sm')
-        doc = nlp(exp)
-        for ent in doc.ents:
-            if ent.label_ == "DATE" and ent.text.lower() in ["year", 'yrs', 'years']:
-                years_of_experience = ent.text
-                for y in years_of_experience.split():
-                    if '.' in y:
-                        return y
-                    if y.lower() in words_to_numbers.keys() or y.replace('+', '').isnumeric():
-                        years = f"{y.replace('+', '')}+"
-                        return re.sub(pattern, lambda x: words_to_numbers[x.group()], years)
     return ','.join(exp) if len(exp) != 0 else None
 
 
