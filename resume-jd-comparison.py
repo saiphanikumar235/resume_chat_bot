@@ -236,6 +236,7 @@ def get_exp(resume_text, llm):
                                   'Extract the number of years of experience from the resume and provide the result in JSON format where key is exp',
                                   llm)
     st.write(exp)
+    exp.lower().replace("result:")
     if exp.startswith("{"):
         r = json.loads(exp)
         return ','.join(r['exp'])
