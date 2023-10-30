@@ -258,6 +258,7 @@ def get_exp(resume_text, llm):
 
 def get_details(resume_text, path, llm):
     time.sleep(5)
+    get_knowledge_base(embeddings, resume_text)
     extracted_text = {"Name": extract_name(resume_text),
                       "E-Mail": get_email_addresses(resume_text),
                       "Phone No": get_phone_numbers(resume_text),
