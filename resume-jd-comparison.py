@@ -36,7 +36,7 @@ import time
 # os.system("python -m nltk.downloader stopwords")
 nltk.download('punkt')
 
-knowledgeBase = None
+
 
 
 def get_knowledge_base(embeddings, text):
@@ -52,11 +52,11 @@ def get_knowledge_base(embeddings, text):
 
     # Convert the chunks of text into embeddings to form a knowledge base
     # embeddings = OpenAIEmbeddings(openai_api_key=api_key)
-    global knowledgeBase
     knowledgeBase = FAISS.from_texts(chunks, embeddings)
+    return knowledgeBase
 
 
-def get_details_from_openai(text, query, llm):
+def get_details_from_openai(text, query, llm, knowledgeBase):
     api_key = st.secrets['api_key']
     docs = knowledgeBase.similarity_search(query)
     chain = load_qa_chain(llm, chain_type='stuff')
@@ -122,13 +122,14 @@ def get_phone_numbers(string):
     # return ','.join(list(set([re.sub(r'\D', '', num) for num in phone_numbers])))
 
 
-def get_education(path, resume_text, llm):
+def get_education(path, resume_text, llm, knowledgeBase):
     education_new = ResumeParser(path).get_extracted_data()
     education_new = education_new['degree']
     if education_new is None:
         res = get_details_from_openai(resume_text,
                                       'what is the highest education degree give me in json format where key is degree',
-                                      llm)
+                                      llm,
+                                      knowledgeBase)
         # st.write(res)
         if res.startswith('{'):
             res = json.loads(res)
@@ -139,10 +140,11 @@ def get_education(path, resume_text, llm):
         return ','.join(education_new)
 
 
-def get_current_location(resume_text, llm):
+def get_current_location(resume_text, llm, knowledgeBase):
     res = get_details_from_openai(resume_text,
                                   'what is the location of the candidate give me the output in json format where key is location',
-                                  llm)
+                                  llm,
+                                  knowledgeBase)
     # st.write(res)
     if res.startswith('{'):
         res = json.loads(res)
@@ -193,10 +195,11 @@ def get_skills(resume_text):
     return ','.join([word.capitalize() for word in set([word.lower() for word in skillset])])
 
 
-def extract_certifications(resume_text, llm):
+def extract_certifications(resume_text, llm, knowledgeBase):
     r = get_details_from_openai(resume_text,
                                 'what are the only certifications give me in json format where key is certifications',
-                                llm)
+                                llm,
+                                knowledgeBase)
     # st.write(r)
     if r.startswith("{"):
         r = json.loads(r)
@@ -204,7 +207,7 @@ def extract_certifications(resume_text, llm):
     return None
 
 
-def get_exp(resume_text, llm):
+def get_exp(resume_text, llm, knowledgeBase):
     words_to_numbers = {
         'one': '1',
         'two': '2',
@@ -241,7 +244,8 @@ def get_exp(resume_text, llm):
     #                 return re.sub(pattern, lambda x: words_to_numbers[x.group()], years)
     exp = get_details_from_openai(resume_text,
                                   'what is the number of years of experience give me in json format where key is exp',
-                                  llm)
+                                  llm,
+                                  knowledgeBase)
     # st.write(exp)
     if exp.startswith("{"):
         r = json.loads(exp)
@@ -258,15 +262,15 @@ def get_exp(resume_text, llm):
 
 def get_details(resume_text, path, llm):
     time.sleep(5)
-    get_knowledge_base(embeddings, resume_text)
+    knowledgeBase = get_knowledge_base(embeddings, resume_text)
     extracted_text = {"Name": extract_name(resume_text),
                       "E-Mail": get_email_addresses(resume_text),
                       "Phone No": get_phone_numbers(resume_text),
                       'Skills': get_skills(resume_text),
-                      'Experience': get_exp(resume_text, llm),
-                      'Education': get_education(path, resume_text, llm),
-                      'Approx Current Location': get_current_location(resume_text, llm),
-                      'certifications': extract_certifications(resume_text, llm),
+                      'Experience': get_exp(resume_text, llm, knowledgeBase),
+                      'Education': get_education(path, resume_text, llm, knowledgeBase),
+                      'Approx Current Location': get_current_location(resume_text, llm, knowledgeBase),
+                      'certifications': extract_certifications(resume_text, llm, knowledgeBase),
                       'File Name': path.name
                       }
     return extracted_text
