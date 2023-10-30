@@ -5,7 +5,6 @@ import nltk
 
 nltk.download('stopwords')
 import pandas as pd
-import numpy as np
 import PyPDF2, pdfplumber, nlp, re, docx2txt, streamlit as st, nltk
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -20,6 +19,7 @@ from gensim.models import Word2Vec
 from nltk.tokenize import word_tokenize
 import nltk
 import numpy as np
+from multiprocessing.pool import ThreadPool
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain import FAISS
@@ -141,7 +141,7 @@ def get_education(path, resume_text, llm):
 
 def get_current_location(resume_text, llm):
     res = get_details_from_openai(resume_text,
-                                  'what is the location give me in json format where key is location',
+                                  'what is the location of the candidate give me the output in json format where key is location',
                                   llm)
     # st.write(res)
     if res.startswith('{'):
@@ -257,6 +257,7 @@ def get_exp(resume_text, llm):
 
 
 def get_details(resume_text, path, llm):
+    time.sleep(5)
     extracted_text = {"Name": extract_name(resume_text),
                       "E-Mail": get_email_addresses(resume_text),
                       "Phone No": get_phone_numbers(resume_text),
@@ -264,7 +265,8 @@ def get_details(resume_text, path, llm):
                       'Experience': get_exp(resume_text, llm),
                       'Education': get_education(path, resume_text, llm),
                       'Approx Current Location': get_current_location(resume_text, llm),
-                      'certifications': extract_certifications(resume_text, llm)
+                      'certifications': extract_certifications(resume_text, llm),
+                      'File Name': path.name
                       }
     return extracted_text
 
@@ -311,29 +313,40 @@ def get_embeddings():
 
 embeddings, llm = get_embeddings()
 
-for index, uploaded_resume in enumerate(uploaded_resumes):
-    if uploaded_resume.type == "application/pdf":
-        resume_text = read_pdf(uploaded_resume)
-    else:
-        resume_text = read_docx(uploaded_resume)
-    get_knowledge_base(embeddings, resume_text)
-    resume_details = get_details(resume_text, uploaded_resume, llm)
-    # resume_details['Resume Score'] = compare_jd(resume_text, jd)
-    resume_details['File Name'] = uploaded_resume.name
-    total_files.append(
-        resume_details
+if len(uploaded_resumes) != 0:
+    pool = ThreadPool(4)
+    threads = pool.map_async(
+        lambda file_data: get_details(
+            read_pdf(file_data) if file_data.type == 'application/pdf' else read_docx(file_data),
+            file_data,
+            llm
+        ),
+        uploaded_resumes
     )
-    time.sleep(10)
-if len(total_files) != 0:
-    df = pd.DataFrame(total_files)
-    df.index = np.arange(1, len(df) + 1)
-    df.index.names = ['S.No']
-    res_df = st.dataframe(df)
-    df['Phone No'] = '"' + df['Phone No'] + '"'
-    st.download_button(
-        "Click to Download",
-        df.to_csv(),
-        "file.csv",
-        "text/csv",
-        key='download-csv'
-    )
+    total_files = threads.get()
+    if len(total_files) != 0:
+        df = pd.DataFrame(total_files)
+        df.index = np.arange(1, len(df) + 1)
+        df.index.names = ['S.No']
+        res_df = st.dataframe(df)
+        df['Phone No'] = '"' + df['Phone No'] + '"'
+        st.download_button(
+            "Click to Download",
+            df.to_csv(),
+            "file.csv",
+            "text/csv",
+            key='download-csv'
+        )
+# for index, uploaded_resume in enumerate(uploaded_resumes):
+#     if uploaded_resume.type == "application/pdf":
+#         resume_text = read_pdf(uploaded_resume)
+#     else:
+#         resume_text = read_docx(uploaded_resume)
+#     get_knowledge_base(embeddings, resume_text)
+#     resume_details = get_details(resume_text, uploaded_resume, llm)
+#     # resume_details['Resume Score'] = compare_jd(resume_text, jd)
+#     resume_details['File Name'] = uploaded_resume.name
+#     total_files.append(
+#         resume_details
+#     )
+#     time.sleep(10)
