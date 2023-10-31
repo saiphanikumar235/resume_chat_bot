@@ -319,7 +319,7 @@ def get_embeddings():
 embeddings, llm = get_embeddings()
 
 if len(uploaded_resumes) != 0:
-    pool = ThreadPool(4)
+    pool = ThreadPool(min(len(uploaded_resumes), 10))
     threads = pool.map_async(
         lambda file_data: get_details(
             read_pdf(file_data) if file_data.type == 'application/pdf' else read_docx(file_data),
