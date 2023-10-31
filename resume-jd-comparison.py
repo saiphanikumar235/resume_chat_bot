@@ -125,6 +125,7 @@ def get_phone_numbers(string):
 def get_education(path, resume_text, llm, knowledgeBase):
     education_new = ResumeParser(path).get_extracted_data()
     education_new = education_new['degree']
+    st.write("education")
     if education_new is None:
         res = get_details_from_openai(resume_text,
                                       'what is the highest education degree give me in json format where key is degree',
