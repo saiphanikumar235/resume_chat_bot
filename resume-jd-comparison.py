@@ -36,7 +36,8 @@ import time
 # os.system("python -m nltk.downloader stopwords")
 nltk.download('punkt')
 
-
+linked_data = open('./linkedin skill', 'r', encoding="utf8").readlines()
+cities_data = open("./cities.txt", 'r').readlines()
 
 
 def get_knowledge_base(embeddings, text):
@@ -153,7 +154,7 @@ def get_current_location(resume_text, llm, knowledgeBase):
         # time.sleep(60)
         return res['location']
     else:
-        data = ',' + ','.join(open("./cities.txt", 'r').readlines()).replace('\n', '') + ','
+        data = ',' + ','.join(cities_data).replace('\n', '') + ','
         res = res.replace('"', '').replace(',', '').replace('.', '').split(" ")
         # st.write(res)
         for w in res:
@@ -172,7 +173,7 @@ def extract_name(resume_text):
     for match_id, start, end in matches:
         span = nlp_text[start:end]
         if span.text.lower() in [r.lower().replace("\n", "") for r in
-                                 open('./linkedin skill', 'r', encoding="utf8").readlines()]:
+                                 linked_data]:
             return re.sub(r'\d', '', get_email_addresses(resume_text).split('@')[0]).capitalize()
         if '@' in span.text:
             return span.text.replace(get_email_addresses(resume_text), '')
@@ -183,16 +184,10 @@ def get_skills(resume_text):
     nlp = spacy.load('en_core_web_sm')
     nlp_text = nlp(resume_text)
     tokens = [token.text for token in nlp_text if not token.is_stop]
-    skills = [r.lower().replace("\n", "") for r in open('./linkedin skill', 'r', encoding="utf8").readlines()]
-    skillset = []
-    for i in tokens:
-        if i.lower() in skills:
-            skillset.append(i)
-    for i in nlp_text.noun_chunks:
-        i = i.text.lower().strip()
-        if i in skills:
-            skillset.append(i)
-
+    skills = [r.lower().replace("\n", "") for r in linked_data]
+    skillset = [i for i in tokens if i.lower() in skills]
+    skillset_noun = [i.text.lower().strip() for i in nlp_text.noun_chunks if i.text.lower().strip() in skills]
+    skillset = skillset + skillset_noun
     return ','.join([word.capitalize() for word in set([word.lower() for word in skillset])])
 
 
@@ -209,30 +204,30 @@ def extract_certifications(resume_text, llm, knowledgeBase):
 
 
 def get_exp(resume_text, llm, knowledgeBase):
-    words_to_numbers = {
-        'one': '1',
-        'two': '2',
-        'three': '3',
-        'four': '4',
-        'five': '5',
-        'six': '6',
-        'seven': '7',
-        'eight': '8',
-        'nine': '9',
-        'zero': '0'
-    }
-    pattern = re.compile(r'\b(' + '|'.join(words_to_numbers.keys()) + r')\b')
-    nlp = spacy.load('en_core_web_sm')
-    doc = nlp(resume_text)
-    for ent in doc.ents:
-        if ent.label_ == "DATE" and ent.text.lower() in ["year"]:
-            years_of_experience = ent.text
-            for y in years_of_experience.split():
-                if '.' in y:
-                    return y
-                if y.lower() in words_to_numbers.keys() or y.replace('+', '').isnumeric():
-                    years = f"{y.replace('+', '')}+"
-                    return re.sub(pattern, lambda x: words_to_numbers[x.group()], years)
+    # words_to_numbers = {
+    #     'one': '1',
+    #     'two': '2',
+    #     'three': '3',
+    #     'four': '4',
+    #     'five': '5',
+    #     'six': '6',
+    #     'seven': '7',
+    #     'eight': '8',
+    #     'nine': '9',
+    #     'zero': '0'
+    # }
+    # pattern = re.compile(r'\b(' + '|'.join(words_to_numbers.keys()) + r')\b')
+    # nlp = spacy.load('en_core_web_sm')
+    # doc = nlp(resume_text)
+    # for ent in doc.ents:
+    #     if ent.label_ == "DATE" and ent.text.lower() in ["year"]:
+    #         years_of_experience = ent.text
+    #         for y in years_of_experience.split():
+    #             if '.' in y:
+    #                 return y
+    #             if y.lower() in words_to_numbers.keys() or y.replace('+', '').isnumeric():
+    #                 years = f"{y.replace('+', '')}+"
+    #                 return re.sub(pattern, lambda x: words_to_numbers[x.group()], years)
     # for ent in doc.ents:
     #     if ent.label_ == 'CARDINAL':
     #         years_of_experience = ent.text
@@ -292,6 +287,7 @@ def read_pdf(file):
             Script.append(text)
     Script = ''.join(Script)
     resume_data = Script.replace("\n", " ")
+    os.remove(save_path)
     return resume_data
 
 
@@ -320,7 +316,7 @@ def get_embeddings():
 embeddings, llm = get_embeddings()
 
 if len(uploaded_resumes) != 0:
-    pool = ThreadPool(min(len(uploaded_resumes), 10))
+    pool = ThreadPool(min(len(uploaded_resumes), 3))
     threads = pool.map_async(
         lambda file_data: get_details(
             read_pdf(file_data) if file_data.type == 'application/pdf' else read_docx(file_data),
