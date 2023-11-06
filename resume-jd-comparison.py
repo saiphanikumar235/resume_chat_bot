@@ -126,8 +126,10 @@ def get_phone_numbers(string):
 def get_education(path, resume_text, llm, knowledgeBase):
     education_new = ResumeParser(path).get_extracted_data()
     education_new = education_new['degree']
-    st.write("education")
+    if education_new is not None:
+        return ','.join(education_new)
     if education_new is None:
+        time.sleep(1)
         res = get_details_from_openai(resume_text,
                                       'what is the highest education degree give me in json format where key is degree',
                                       llm,
@@ -138,11 +140,10 @@ def get_education(path, resume_text, llm, knowledgeBase):
             # time.sleep(60)
             return res['degree']
         return None
-    else:
-        return ','.join(education_new)
 
 
 def get_current_location(resume_text, llm, knowledgeBase):
+    time.sleep(1)
     res = get_details_from_openai(resume_text,
                                   'what is the location of the candidate give me the output in json format where key is location',
                                   llm,
@@ -192,6 +193,7 @@ def get_skills(resume_text):
 
 
 def extract_certifications(resume_text, llm, knowledgeBase):
+    time.sleep(1)
     r = get_details_from_openai(resume_text,
                                 'what are the only certifications give me in json format where key is certifications',
                                 llm,
@@ -238,6 +240,7 @@ def get_exp(resume_text, llm, knowledgeBase):
     #                 print(y)
     #                 years = f'{y}+'
     #                 return re.sub(pattern, lambda x: words_to_numbers[x.group()], years)
+    time.sleep(1)
     exp = get_details_from_openai(resume_text,
                                   'what is the number of years of experience give me in json format where key is exp',
                                   llm,
@@ -257,7 +260,6 @@ def get_exp(resume_text, llm, knowledgeBase):
 
 
 def get_details(resume_text, path, llm):
-    time.sleep(5)
     knowledgeBase = get_knowledge_base(embeddings, resume_text)
     extracted_text = {"Name": extract_name(resume_text),
                       "E-Mail": get_email_addresses(resume_text),
@@ -316,7 +318,7 @@ def get_embeddings():
 embeddings, llm = get_embeddings()
 
 if len(uploaded_resumes) != 0:
-    pool = ThreadPool(min(len(uploaded_resumes), 3))
+    pool = ThreadPool(min(len(uploaded_resumes), 2))
     threads = pool.map_async(
         lambda file_data: get_details(
             read_pdf(file_data) if file_data.type == 'application/pdf' else read_docx(file_data),
