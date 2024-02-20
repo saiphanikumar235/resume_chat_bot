@@ -13,6 +13,6 @@ matplotlib
 langchain
 langsmith
 fsspec
-openai
+openai==0.28
 tiktoken
 faiss-cpu
