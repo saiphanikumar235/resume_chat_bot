@@ -1,7 +1,6 @@
-import os
-
 import numpy as np
 import nltk
+import os
 
 nltk.download('stopwords')
 import pandas as pd
