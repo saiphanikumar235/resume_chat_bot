@@ -2,7 +2,7 @@ import nltk
 import os
 import os
 
-# nltk.download('stopwords')
+nltk.download('stopwords')
 from streamlit_option_menu import option_menu
 from collections import Counter
 import re
@@ -30,7 +30,7 @@ from langchain.prompts import PromptTemplate, ChatPromptTemplate, HumanMessagePr
 from langchain.chat_models import ChatOpenAI
 import time
 
-# nltk.download('punkt')
+nltk.download('punkt')
 
 linked_data = open('./linkedin skill', 'r', encoding="utf8").readlines()
 cities_data = open("./cities.txt", 'r').readlines()
