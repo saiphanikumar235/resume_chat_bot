@@ -16,3 +16,4 @@ fsspec==2023.4.0
 openai==0.28.1
 tiktoken==0.5.1
 faiss-cpu==1.7.4
+streamlit-option-menu
