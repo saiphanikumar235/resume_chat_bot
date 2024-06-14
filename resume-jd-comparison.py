@@ -332,7 +332,7 @@ def jd_comparer(resume, job_description):
     pass
 
 
-st.title("Scan Recruit")
+st.title("RapidRecruitX")
 selected = option_menu(
     menu_title=None,
     options=['Intro', 'Resume-Parser', 'Jd-Comparer'],
@@ -343,7 +343,7 @@ selected = option_menu(
 )
 uploaded_resumes = []
 if selected == 'Intro':
-    st.title("Welcome to ScanRecruit 🚀")
+    st.title("Welcome to RapidRecruitX 🚀")
     st.markdown(
         "RapidRecruitX is your go-to solution for effortlessly extracting vital information from PDF and DOC files, revolutionizing your recruitment process. 📑")
 
