@@ -2,7 +2,7 @@ import nltk
 import os
 import os
 
-nltk.download('stopwords')
+# nltk.download('stopwords')
 from streamlit_option_menu import option_menu
 from collections import Counter
 import re
@@ -11,7 +11,7 @@ import PyPDF2, pdfplumber, nlp, re, docx2txt, streamlit as st, nltk
 import spacy
 from spacy.matcher import Matcher
 from spacy.tokens import Span
-from nltk.corpus import stopwords
+# from nltk.corpus import stopwords
 from pathlib import Path
 import json
 from pyresparser import ResumeParser
