@@ -345,7 +345,7 @@ uploaded_resumes = []
 if selected == 'Intro':
     st.title("Welcome to ScanRecruit 🚀")
     st.markdown(
-        "ScanRecruit is your go-to solution for effortlessly extracting vital information from PDF and DOC files, revolutionizing your recruitment process. 📑")
+        "RapidRecruitX is your go-to solution for effortlessly extracting vital information from PDF and DOC files, revolutionizing your recruitment process. 📑")
 
     st.subheader("Key Features:")
     st.markdown("""
@@ -356,7 +356,7 @@ if selected == 'Intro':
         5. **User-Friendly Interface:** Intuitive design ensures ease of use for all users.
         6. **Export Options:** Offers multiple formats for exporting extracted data, seamlessly integrating with your workflow.
         """)
-    st.write("Experience the convenience of automated data extraction with ScanRecruit on your Streamlit platform! 🚀")
+    st.write("Experience the convenience of automated data extraction with RapidRecruitX on your Streamlit platform! 🚀")
     pass
 elif selected == 'Resume-Parser':
     uploaded_resumes = st.file_uploader(
