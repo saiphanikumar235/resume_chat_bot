@@ -367,7 +367,7 @@ elif selected == 'Resume-Parser':
     total_files = []
 
 
-    @st.experimental_singleton
+    # @st.experimental_singleton
     def get_embeddings():
         llm = OpenAI(openai_api_key=st.secrets['api_key'], model_name="gpt-3.5-turbo")
         embeddings = OpenAIEmbeddings(openai_api_key=st.secrets['api_key'])
