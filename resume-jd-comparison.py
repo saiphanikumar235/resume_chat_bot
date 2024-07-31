@@ -345,7 +345,7 @@ if len(uploaded_resumes) != 0:
         st.write(total_files_str)
         knowledgeBase = get_knowledge_base(embeddings, total_files_str)
         question = st.text_input("Enter the query")
-        question = question + " else give None only"
+        question = question + " else give None only and don't return the given knowledgebase"
         if question:
             res = get_details_from_openai(total_files_str,
                                           question,
