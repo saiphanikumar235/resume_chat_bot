@@ -347,7 +347,7 @@ if len(uploaded_resumes) != 0:
                                       'get the json whose location is hyderabad',
                                       llm,
                                       knowledgeBase)
-        st.write(total_files)
+        st.write(res)
         # df = pd.DataFrame(total_files)
         # df.index = np.arange(1, len(df) + 1)
         # df.index.names = ['S.No']
