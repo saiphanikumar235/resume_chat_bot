@@ -342,7 +342,6 @@ if len(uploaded_resumes) != 0:
     total_files = threads.get()
     if len(total_files) != 0:
         total_files_str = ' \n '.join([f"{r}:{row[r]}" for row in total_files for r in row])
-        st.write(total_files_str)
         knowledgeBase = get_knowledge_base(embeddings, total_files_str)
         question = st.text_input("Enter the query")
         question = question + " if you get a hit just give the knowledgebase in json format only else give None-1 only and don't return the given knowledgebase"
@@ -356,6 +355,7 @@ if len(uploaded_resumes) != 0:
             else:
                 st.write(res)
                 res = json.dumps(res)
+                st.write(res)
                 df = pd.DataFrame(res)
                 df.index = np.arange(1, len(df) + 1)
                 df.index.names = ['S.No']
