@@ -355,7 +355,7 @@ if len(uploaded_resumes) != 0:
                 st.write("Output is none")
             else:
                 st.write(res)
-                res = json.loads(res)
+                res = json.dumps(res)
                 df = pd.DataFrame(res)
                 df.index = np.arange(1, len(df) + 1)
                 df.index.names = ['S.No']
