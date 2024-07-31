@@ -343,7 +343,7 @@ if len(uploaded_resumes) != 0:
     if len(total_files) != 0:
         total_files_str = '\n'.join([f"{r}:{row[r]}" for row in total_files for r in row])
         st.write(total_files_str)
-        knowledgeBase = get_knowledge_base(embeddings, total_files)
+        knowledgeBase = get_knowledge_base(embeddings, total_files_str)
         question = st.text_input("Enter the query")
         if question:
             res = get_details_from_openai(total_files_str,
