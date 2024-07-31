@@ -354,7 +354,7 @@ if len(uploaded_resumes) != 0:
                 st.write("Output is none")
             else:
                 st.write(res)
-                res = json.dumps(res)
+                res = json.loads(res)
                 st.write(res)
                 df = pd.DataFrame(res)
                 df.index = np.arange(1, len(df) + 1)
