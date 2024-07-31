@@ -341,15 +341,16 @@ if len(uploaded_resumes) != 0:
     )
     total_files = threads.get()
     if len(total_files) != 0:
-        total_files = str(total_files)
-        knowledgeBase = get_knowledge_base(embeddings, total_files)
-        question = st.text_input("Enter the query")
-        if question:
-            res = get_details_from_openai(total_files,
-                                          question,
-                                          llm,
-                                          knowledgeBase)
-            st.write(res)
+        total_files_str = '\n'.join([f"{r}:{row[r]}" for row in total_files for r in row])
+        st.write(total_files_str)
+        # knowledgeBase = get_knowledge_base(embeddings, total_files)
+        # question = st.text_input("Enter the query")
+        # if question:
+        #     res = get_details_from_openai(total_files,
+        #                                   question,
+        #                                   llm,
+        #                                   knowledgeBase)
+        #     st.write(res)
         # df = pd.DataFrame(total_files)
         # df.index = np.arange(1, len(df) + 1)
         # df.index.names = ['S.No']
