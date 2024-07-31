@@ -248,7 +248,7 @@ def get_details(resume_text, path, llm):
                       'certifications': extract_certifications(resume_text, llm, knowledgeBase),
                       'File Name': path.name
                       }
-    return extracted_text, knowledgeBase
+    return extracted_text
 
 
 def read_pdf(file):
@@ -340,9 +340,10 @@ if len(uploaded_resumes) != 0:
         ),
         uploaded_resumes
     )
-    total_files,knowledgeBase = threads.get()
+    total_files = threads.get()
     if len(total_files) != 0:
         total_files = str(total_files)
+        knowledgeBase = get_knowledge_base(embeddings, total_files)
         res = get_details_from_openai(total_files,
                                       'get the json whose location is hyderabad',
                                       llm,
