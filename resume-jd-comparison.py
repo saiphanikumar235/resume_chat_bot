@@ -32,7 +32,6 @@ import time
 
 nltk.download('punkt')
 
-linked_data = open('./linkedin skill', 'r', encoding="utf8").readlines()
 cities_data = open("./cities.txt", 'r').readlines()
 
 
@@ -186,23 +185,6 @@ def extract_name(resume_text):
         return span.text
 
 
-def get_skills(resume_text):
-    """
-    Extracts skills from the resume text.
-
-    :param resume_text: Text content of the resume.
-    :return: Extracted skills from the resume.
-    """
-    nlp = spacy.load('en_core_web_sm')
-    nlp_text = nlp(resume_text)
-    tokens = [token.text for token in nlp_text if not token.is_stop]
-    skills = [r.lower().replace("\n", "") for r in linked_data]
-    skillset = [i for i in tokens if i.lower() in skills]
-    skillset_noun = [i.text.lower().strip() for i in nlp_text.noun_chunks if i.text.lower().strip() in skills]
-    skillset = skillset + skillset_noun
-    return ','.join([word.capitalize() for word in set([word.lower() for word in skillset])])
-
-
 def extract_certifications(resume_text, llm, knowledgeBase):
     """
     Extracts certifications from the resume text using OpenAI's language model and knowledge base.
@@ -263,7 +245,6 @@ def get_details(resume_text, path, llm):
     extracted_text = {"Name": extract_name(resume_text),
                       "E-Mail": get_email_addresses(resume_text),
                       "Phone No": get_phone_numbers(resume_text),
-                      'Skills': get_skills(resume_text),
                       'Experience': get_exp(resume_text, llm, knowledgeBase),
                       'Education': get_education(path, resume_text, llm, knowledgeBase),
                       'Approx Current Location': get_current_location(resume_text, llm, knowledgeBase),
@@ -328,109 +309,55 @@ def jd_comparer(resume, job_description):
     total_matched_words = sum(matched_words.values())
     total_job_words = sum(job_word_freq.values())
     match_percentage = (total_matched_words / total_job_words) * 100
-    return {"extract_name": extract_name(resume), "Phone No": get_phone_numbers(resume), "Score": min(match_percentage, 100)}
+    return {"extract_name": extract_name(resume), "Phone No": get_phone_numbers(resume),
+            "Score": min(match_percentage, 100)}
     pass
 
 
-st.title("RapidRecruitX")
-selected = option_menu(
-    menu_title=None,
-    options=['Intro', 'Resume-Parser', 'Jd-Comparer'],
-    icons=['menu-button-wide-fill', 'file-earmark-person-fill', 'app-indicator'],
-    menu_icon='cast',
-    default_index=0,
-    orientation='horizontal'
+
+st.title("Welcome to Resume Chat Bot ")
+uploaded_resumes = st.file_uploader(
+    "Upload a resume (PDF or Docx)",
+    type=["pdf", "docx"],
+    accept_multiple_files=True,
 )
-uploaded_resumes = []
-if selected == 'Intro':
-    st.title("Welcome to RapidRecruitX 🚀")
-    st.markdown(
-        "RapidRecruitX is your go-to solution for effortlessly extracting vital information from PDF and DOC files, revolutionizing your recruitment process. 📑")
+total_files = []
 
-    st.subheader("Key Features:")
-    st.markdown("""
-        1. **Document Parsing:** Extracts essential details like name, experience, skills, location, education, phone number, email, and certifications.
-        2. **Efficiency:** Rapidly processes multiple files, saving valuable time and effort.
-        3. **Accuracy:** Utilizes advanced algorithms for precise information extraction.
-        4. **Customization:** Tailors the extraction process to match your specific needs.
-        5. **User-Friendly Interface:** Intuitive design ensures ease of use for all users.
-        6. **Export Options:** Offers multiple formats for exporting extracted data, seamlessly integrating with your workflow.
-        """)
-    st.write("Experience the convenience of automated data extraction with RapidRecruitX on your Streamlit platform! 🚀")
-    pass
-elif selected == 'Resume-Parser':
-    uploaded_resumes = st.file_uploader(
-        "Upload a resume (PDF or Docx)",
-        type=["pdf", "docx"],
-        accept_multiple_files=True,
+
+# @st.experimental_singleton
+def get_embeddings():
+    llm = OpenAI(openai_api_key=st.secrets['api_key'], model_name="gpt-3.5-turbo")
+    embeddings = OpenAIEmbeddings(openai_api_key=st.secrets['api_key'])
+    return embeddings, llm
+
+
+embeddings, llm = get_embeddings()
+
+if len(uploaded_resumes) != 0:
+    pool = ThreadPool(min(len(uploaded_resumes), 2))
+    threads = pool.map_async(
+        lambda file_data: get_details(
+            read_pdf(file_data) if file_data.type == 'application/pdf' else read_docx(file_data),
+            file_data,
+            llm
+        ),
+        uploaded_resumes
     )
-    total_files = []
-
-
-    # @st.experimental_singleton
-    def get_embeddings():
-        llm = OpenAI(openai_api_key=st.secrets['api_key'], model_name="gpt-3.5-turbo")
-        embeddings = OpenAIEmbeddings(openai_api_key=st.secrets['api_key'])
-        return embeddings, llm
-
-
-    embeddings, llm = get_embeddings()
-
-    if len(uploaded_resumes) != 0:
-        pool = ThreadPool(min(len(uploaded_resumes), 2))
-        threads = pool.map_async(
-            lambda file_data: get_details(
-                read_pdf(file_data) if file_data.type == 'application/pdf' else read_docx(file_data),
-                file_data,
-                llm
-            ),
-            uploaded_resumes
-        )
-        total_files = threads.get()
-        if len(total_files) != 0:
-            df = pd.DataFrame(total_files)
-            df.index = np.arange(1, len(df) + 1)
-            df.index.names = ['S.No']
-            res_df = st.dataframe(df)
-            df['Phone No'] = '"' + df['Phone No'] + '"'
-            col_1, col_2 = st.columns(2)
-            col_1.download_button(
-                "Click to Download",
-                df.to_csv(),
-                "file.csv",
-                "text/csv",
-                key='download-csv'
-            )
-elif selected == 'Jd-Comparer':
-    if len(uploaded_resumes) == 0:
-        uploaded_resumes = st.file_uploader(
-            "Upload a resume (PDF or Docx)",
-            type=["pdf", "docx"],
-            accept_multiple_files=True,
-        )
-    total_files = []
-    if len(uploaded_resumes) != 0:
-        jd_text = st.text_input("Job Description")
-        if len(jd_text):
-            pool = ThreadPool(min(len(uploaded_resumes), 2))
-            threads = pool.map_async(
-                lambda file_data: jd_comparer(
-                    read_pdf(file_data) if file_data.type == 'application/pdf' else read_docx(file_data),
-                    jd_text
-                ),
-                uploaded_resumes
-            )
-            total_files = threads.get()
-            if len(total_files) != 0:
-                df = pd.DataFrame(total_files)
-                df.index = np.arange(1, len(df) + 1)
-                df.index.names = ['S.No']
-                res_df = st.dataframe(df)
-                st.download_button(
-                    "Click to Download",
-                    df.to_csv(),
-                    "file.csv",
-                    "text/csv",
-                    key='download-csv'
-                )
+    total_files = threads.get()
+    if len(total_files) != 0:
+        total_files = str(total_files)
+        st.write(total_files)
+        # df = pd.DataFrame(total_files)
+        # df.index = np.arange(1, len(df) + 1)
+        # df.index.names = ['S.No']
+        # res_df = st.dataframe(df)
+        # df['Phone No'] = '"' + df['Phone No'] + '"'
+        # col_1, col_2 = st.columns(2)
+        # col_1.download_button(
+        #     "Click to Download",
+        #     df.to_csv(),
+        #     "file.csv",
+        #     "text/csv",
+        #     key='download-csv'
+        # )
     pass
