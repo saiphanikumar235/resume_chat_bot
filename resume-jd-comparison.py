@@ -311,7 +311,6 @@ def jd_comparer(resume, job_description):
     pass
 
 
-
 st.title("Welcome to Resume Chat Bot ")
 uploaded_resumes = st.file_uploader(
     "Upload a resume (PDF or Docx)",
@@ -345,11 +344,12 @@ if len(uploaded_resumes) != 0:
         total_files = str(total_files)
         knowledgeBase = get_knowledge_base(embeddings, total_files)
         question = st.text_input("Enter the query")
-        res = get_details_from_openai(total_files,
-                                      question,
-                                      llm,
-                                      knowledgeBase)
-        st.write(res)
+        if question:
+            res = get_details_from_openai(total_files,
+                                          question,
+                                          llm,
+                                          knowledgeBase)
+            st.write(res)
         # df = pd.DataFrame(total_files)
         # df.index = np.arange(1, len(df) + 1)
         # df.index.names = ['S.No']
