@@ -177,9 +177,6 @@ def extract_name(resume_text):
     matches = matcher(nlp_text)
     for match_id, start, end in matches:
         span = nlp_text[start:end]
-        if span.text.lower() in [r.lower().replace("\n", "") for r in
-                                 linked_data]:
-            return re.sub(r'\d', '', get_email_addresses(resume_text).split('@')[0]).capitalize()
         if '@' in span.text:
             return span.text.replace(get_email_addresses(resume_text), '')
         return span.text
