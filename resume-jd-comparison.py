@@ -344,8 +344,9 @@ if len(uploaded_resumes) != 0:
     if len(total_files) != 0:
         total_files = str(total_files)
         knowledgeBase = get_knowledge_base(embeddings, total_files)
+        question = st.text_input("Enter the query")
         res = get_details_from_openai(total_files,
-                                      'get the json whose location is hyderabad',
+                                      question,
                                       llm,
                                       knowledgeBase)
         st.write(res)
