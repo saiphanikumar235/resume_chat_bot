@@ -351,7 +351,10 @@ if len(uploaded_resumes) != 0:
                                           question,
                                           llm,
                                           knowledgeBase)
-            st.write(res)
+            if res == 'None':
+                st.write("Output is none")
+            else:
+                st.write(res)
         # df = pd.DataFrame(total_files)
         # df.index = np.arange(1, len(df) + 1)
         # df.index.names = ['S.No']
