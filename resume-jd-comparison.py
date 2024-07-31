@@ -248,7 +248,7 @@ def get_details(resume_text, path, llm):
                       'certifications': extract_certifications(resume_text, llm, knowledgeBase),
                       'File Name': path.name
                       }
-    return extracted_text
+    return extracted_text, knowledgeBase
 
 
 def read_pdf(file):
@@ -340,9 +340,13 @@ if len(uploaded_resumes) != 0:
         ),
         uploaded_resumes
     )
-    total_files = threads.get()
+    total_files,knowledgeBase = threads.get()
     if len(total_files) != 0:
         total_files = str(total_files)
+        res = get_details_from_openai(total_files,
+                                      'what is the highest education degree give me in json format where key is degree',
+                                      llm,
+                                      knowledgeBase)
         st.write(total_files)
         # df = pd.DataFrame(total_files)
         # df.index = np.arange(1, len(df) + 1)
