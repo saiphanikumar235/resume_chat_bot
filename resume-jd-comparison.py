@@ -355,17 +355,18 @@ if len(uploaded_resumes) != 0:
                 st.write("Output is none")
             else:
                 st.write(res)
-        # df = pd.DataFrame(total_files)
-        # df.index = np.arange(1, len(df) + 1)
-        # df.index.names = ['S.No']
-        # res_df = st.dataframe(df)
-        # df['Phone No'] = '"' + df['Phone No'] + '"'
-        # col_1, col_2 = st.columns(2)
-        # col_1.download_button(
-        #     "Click to Download",
-        #     df.to_csv(),
-        #     "file.csv",
-        #     "text/csv",
-        #     key='download-csv'
-        # )
+                res = json.loads(res)
+                df = pd.DataFrame(res)
+                df.index = np.arange(1, len(df) + 1)
+                df.index.names = ['S.No']
+                res_df = st.dataframe(df)
+                df['Phone No'] = '"' + df['Phone No'] + '"'
+                col_1, col_2 = st.columns(2)
+                col_1.download_button(
+                    "Click to Download",
+                    df.to_csv(),
+                    "file.csv",
+                    "text/csv",
+                    key='download-csv'
+                )
     pass
