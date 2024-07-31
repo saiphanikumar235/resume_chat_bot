@@ -344,7 +344,7 @@ if len(uploaded_resumes) != 0:
     if len(total_files) != 0:
         total_files = str(total_files)
         res = get_details_from_openai(total_files,
-                                      'what is the highest education degree give me in json format where key is degree',
+                                      'get the json whose location is hyderabad',
                                       llm,
                                       knowledgeBase)
         st.write(total_files)
