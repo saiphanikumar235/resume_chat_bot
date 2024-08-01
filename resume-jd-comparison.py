@@ -360,7 +360,7 @@ if len(uploaded_resumes) != 0:
                 df.index = np.arange(1, len(df) + 1)
                 df.index.names = ['S.No']
                 res_df = st.dataframe(df)
-                df['Phone No'] = '"' + df['Phone No'] + '"'
+                # df['Phone No'] = '"' + df['Phone No'] + '"'
                 col_1, col_2 = st.columns(2)
                 col_1.download_button(
                     "Click to Download",
