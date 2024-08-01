@@ -343,6 +343,7 @@ if len(uploaded_resumes) != 0:
     if len(total_files) != 0:
         total_files_str = ' \n '.join([f"{r}:{row[r]}" for row in total_files for r in row])
         knowledgeBase = get_knowledge_base(embeddings, total_files_str)
+        st.write(total_files_str)
         question = st.text_input("Enter the query")
         if question:
             question = question + " if you get a hit just give the knowledgebase in json format only else give None-1 only and don't return the given knowledgebase"
