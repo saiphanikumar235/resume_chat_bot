@@ -363,7 +363,10 @@ if len(uploaded_resumes) != 0:
                 st.write(res)
                 res = json.loads(res)
                 st.write(res)
-                df = pd.DataFrame([res])
+                if 'list' in str(type(res)):
+                    df = pd.DataFrame(res)
+                else:
+                    df = pd.DataFrame([res])
                 df.index = np.arange(1, len(df) + 1)
                 df.index.names = ['S.No']
                 res_df = st.dataframe(df)
