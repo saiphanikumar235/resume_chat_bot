@@ -365,6 +365,12 @@ if len(uploaded_resumes) != 0:
                 st.write(res)
                 if 'list' in str(type(res)):
                     df = pd.DataFrame(res)
+                elif 'dict' in str(type(res)):
+                    if 'candidates' in res:
+                        if 'list' in str(type(res['candidates'])):
+                            df = pd.DataFrame(res)
+                        else:
+                            df = pd.DataFrame([res['candidates']])
                 else:
                     df = pd.DataFrame([res])
                 df.index = np.arange(1, len(df) + 1)
