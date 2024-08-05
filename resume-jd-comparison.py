@@ -346,7 +346,13 @@ if len(uploaded_resumes) != 0:
         st.write(total_files_str)
         question = st.text_input("Enter the query")
         if question:
-            question = question + " if you get a hit just give the knowledgebase in json format only else give None-1 only and don't return the given knowledgebase"
+            pre_question = "Consider you are a HR recruiter who want to filter the candidates on several filtering " \
+                           "criteria, " \
+                           "where data of the resumes feed as a paragraph where each line is a resume now based on " \
+                           "the question you " \
+                           "have to filter the resumes and the question is - "
+            question = pre_question + question + "if you get a hit just give the knowledgebase in json format only " \
+                                                 "else give None-1 only and don't return the given knowledgebase "
             res = get_details_from_openai(total_files_str,
                                           question,
                                           llm,
