@@ -378,7 +378,7 @@ if len(uploaded_resumes) != 0:
                         df = pd.DataFrame([res])
                 else:
                     df = pd.DataFrame([res])
-                df.index = np.arange(1, len(total_files) + 1)
+                df.index = np.arange(1, len(df) + 1)
                 df.index.names = ['S.No']
                 df = df.drop_duplicates()
                 res_df = st.dataframe(df)
