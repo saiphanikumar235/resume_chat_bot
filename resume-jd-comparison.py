@@ -368,8 +368,10 @@ if len(uploaded_resumes) != 0:
                 elif 'dict' in str(type(res)):
                     if 'candidates' in res:
                         if 'list' in str(type(res['candidates'])):
+                            st.write(res)
                             df = pd.DataFrame(res)
                         else:
+                            st.write(res['candidates'])
                             df = pd.DataFrame([res['candidates']])
                 else:
                     df = pd.DataFrame([res])
