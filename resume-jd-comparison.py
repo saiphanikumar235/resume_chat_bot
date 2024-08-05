@@ -343,7 +343,7 @@ if len(uploaded_resumes) != 0:
     if len(total_files) != 0:
         total_files_str = ' \n '.join([f"{r}:{row[r]}" for row in total_files for r in row])
         knowledgeBase = get_knowledge_base(embeddings, total_files_str)
-        st.write(total_files_str)
+        # st.write(total_files_str)
         question = st.text_input("Enter the query")
         if question:
             pre_question = "Consider you are a HR recruiter who want to filter the candidates on several filtering " \
@@ -360,9 +360,9 @@ if len(uploaded_resumes) != 0:
             if res == 'None-1' or 'None-1' in res:
                 st.write("Output is none")
             else:
-                st.write(res)
+                # st.write(res)
                 res = json.loads(res)
-                st.write(res)
+                # st.write(res)
                 if 'list' in str(type(res)):
                     df = pd.DataFrame(res)
                 elif 'dict' in str(type(res)):
