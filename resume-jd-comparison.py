@@ -352,8 +352,6 @@ if len(uploaded_resumes) != 0:
                            "the question you " \
                            "have to filter the resumes and the question is - "
             question = pre_question + question + "if you get a hit just give the knowledgebase in json format only " \
-                                                 "with out adding any new keys just give me the existing information " \
-                                                 "only" \
                                                  "else give None-1 only and don't return the given knowledgebase "
             res = get_details_from_openai(total_files_str,
                                           question,
