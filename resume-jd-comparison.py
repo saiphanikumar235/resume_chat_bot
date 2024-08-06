@@ -362,7 +362,7 @@ if len(uploaded_resumes) != 0:
             else:
                 # st.write(res)
                 res = json.loads(res)
-                st.write(res)
+                # st.write(res)
                 if 'list' in str(type(res)):
                     temp = []
                     for row in res:
@@ -375,17 +375,17 @@ if len(uploaded_resumes) != 0:
                     temp = []
                     for r in res:
                         if 'dict' in str(type(res[r])):
-                            st.write(r)
+                            # st.write(r)
                             break
                         else:
                             temp.append(res[r])
                     if temp:
-                        st.write('temp')
-                        st.write(temp)
+                        # st.write('temp')
+                        # st.write(temp)
                         df = pd.DataFrame(temp)
                     else:
-                        st.write('res')
-                        st.write(res)
+                        # st.write('res')
+                        # st.write(res)
                         df = pd.DataFrame(res)
                     # if 'candidates' in [k.lower() for k in res]:
                     #     if 'list' in str(type(res.get('candidates', []))):
