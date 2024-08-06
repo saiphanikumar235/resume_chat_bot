@@ -366,7 +366,10 @@ if len(uploaded_resumes) != 0:
                 if 'list' in str(type(res)):
                     temp = []
                     for row in res:
-                        temp.append(row.values())
+                        if 'str' in str(type(row)):
+                            temp.append(row.values())
+                        else:
+                            temp.append(row)
                     df = pd.DataFrame(temp)
                 elif 'dict' in str(type(res)):
                     temp = []
