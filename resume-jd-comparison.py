@@ -362,7 +362,7 @@ if len(uploaded_resumes) != 0:
             else:
                 # st.write(res)
                 res = json.loads(res)
-                # st.write(res)
+                st.write(res)
                 if 'list' in str(type(res)):
                     temp = []
                     for row in res:
