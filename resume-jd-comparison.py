@@ -380,9 +380,11 @@ if len(uploaded_resumes) != 0:
                         else:
                             temp.append(res[r])
                     if temp:
+                        st.write('temp')
                         st.write(temp)
                         df = pd.DataFrame(temp)
                     else:
+                        st.write('res')
                         st.write(res)
                         df = pd.DataFrame(res)
                     # if 'candidates' in [k.lower() for k in res]:
