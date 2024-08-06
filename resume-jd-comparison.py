@@ -374,10 +374,10 @@ if len(uploaded_resumes) != 0:
                 elif 'dict' in str(type(res)):
                     temp = []
                     for r in res:
-                        if 'dict' not in str(type(res[r])):
-                            temp.append(res[r])
-                        else:
+                        if 'dict' in str(type(res[r])):
                             break
+                        else:
+                            temp.append(res[r])
                     if temp:
                         st.write(temp)
                         df = pd.DataFrame(temp)
