@@ -374,8 +374,14 @@ if len(uploaded_resumes) != 0:
                 elif 'dict' in str(type(res)):
                     temp = []
                     for r in res:
-                        temp.append(res[r])
-                    df = pd.DataFrame(temp)
+                        if 'dict' not in str(type(res[r])):
+                            temp.append(res[r])
+                        else:
+                            break
+                    if temp:
+                        df = pd.DataFrame(temp)
+                    else:
+                        df = pd.DataFrame(res)
                     # if 'candidates' in [k.lower() for k in res]:
                     #     if 'list' in str(type(res.get('candidates', []))):
                     #         df = pd.DataFrame(res.get('candidates', []))
