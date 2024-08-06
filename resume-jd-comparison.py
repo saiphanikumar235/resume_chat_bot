@@ -364,18 +364,25 @@ if len(uploaded_resumes) != 0:
                 res = json.loads(res)
                 # st.write(res)
                 if 'list' in str(type(res)):
-                    df = pd.DataFrame(res)
+                    temp = []
+                    for row in res:
+                        temp.append(row.values())
+                    df = pd.DataFrame(temp)
                 elif 'dict' in str(type(res)):
-                    if 'candidates' in [k.lower() for k in res]:
-                        if 'list' in str(type(res.get('candidates', []))):
-                            df = pd.DataFrame(res.get('candidates', []))
-                        elif 'list' in str(type(res.get('Candidates', []))):
-                            df = pd.DataFrame(res.get('Candidates', []))
-                        else:
-                            st.write(res['candidates'])
-                            df = pd.DataFrame([res['candidates']])
-                    else:
-                        df = pd.DataFrame([res])
+                    temp = []
+                    for r in res:
+                        temp.append(res[r])
+                    df = pd.DataFrame(temp)
+                    # if 'candidates' in [k.lower() for k in res]:
+                    #     if 'list' in str(type(res.get('candidates', []))):
+                    #         df = pd.DataFrame(res.get('candidates', []))
+                    #     elif 'list' in str(type(res.get('Candidates', []))):
+                    #         df = pd.DataFrame(res.get('Candidates', []))
+                    #     else:
+                    #         st.write(res['candidates'])
+                    #         df = pd.DataFrame([res['candidates']])
+                    # else:
+                    #     df = pd.DataFrame([res])
                 else:
                     df = pd.DataFrame([res])
                 df.index = np.arange(1, len(df) + 1)
