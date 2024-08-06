@@ -375,6 +375,7 @@ if len(uploaded_resumes) != 0:
                     temp = []
                     for r in res:
                         if 'dict' in str(type(res[r])):
+                            st.write(r)
                             break
                         else:
                             temp.append(res[r])
