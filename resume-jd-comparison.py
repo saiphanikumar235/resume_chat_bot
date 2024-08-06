@@ -379,8 +379,10 @@ if len(uploaded_resumes) != 0:
                         else:
                             break
                     if temp:
+                        st.write(temp)
                         df = pd.DataFrame(temp)
                     else:
+                        st.write(res)
                         df = pd.DataFrame(res)
                     # if 'candidates' in [k.lower() for k in res]:
                     #     if 'list' in str(type(res.get('candidates', []))):
